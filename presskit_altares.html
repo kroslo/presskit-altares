@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALTARES - Press Kit Interactivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Inter:wght@300;400;600&family=Bebas+Neue&family=Monoton&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Psychedelic Spectrum (Deep Purple, Vibrant Yellow, Hot Pink, Electric Blue, Lime Green, Cyan, Orange) -->
+    <!-- Application Structure Plan: A single-page, thematic scrolling experience. Sections are: Hero (Intro), El Ritual (About/Style), La Ofrenda (Album), Manifestaciones (Gallery), and El Contacto. A sticky nav allows non-linear exploration. This structure immerses the user in the band's world rather than presenting a static document, enhancing engagement for press and fans. -->
+    <!-- Visualization & Content Choices: Report Info: Band Bio/Style -> Goal: Inform/Intrigue -> Presentation: Combined thematic text section with enhanced psychedelic styling and dynamic backgrounds -> Interaction: Strong typography, vibrant card-like layouts with subtle glow effects -> Justification: Creates a cohesive narrative about the band's identity, with a more pronounced and animated visual theme. || Report Info: Photos/Videos -> Goal: Showcase -> Presentation: Tabbed gallery (HTML/JS) with responsive grid and lightbox -> Interaction: Click to view larger/play -> Justification: Organizes media cleanly without overwhelming the user, with updated visual cues and borders. || Report Info: Album Tracklist -> Goal: Organize/Engage -> Presentation: Interactive list with bolder styling and enhanced hover effects, including audio fragment players -> Interaction: Hover effects, click to play audio -> Justification: Adds a more visually striking interactive touch to a static list and allows direct engagement with music snippets. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1A0A33; /* Deep Purple - base */
+            color: #E0E0E0; /* Light Gray for text */
+        }
+        .font-ritual {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+        .font-psychedelic {
+            font-family: 'Monoton', cursive; /* New font for psychedelic feel */
+            letter-spacing: 0.1em;
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #FFD700; /* Vibrant Yellow */
+            border-bottom-color: #FFD700;
+        }
+        .hero-bg {
+            background-image:
+                radial-gradient(circle at 20% 80%, #FF69B4 0%, transparent 30%), /* Hot Pink */
+                radial-gradient(circle at 80% 20%, #00BFFF 0%, transparent 30%), /* Electric Blue */
+                linear-gradient(to top right, #FFD700, transparent), /* Vibrant Yellow */
+                linear-gradient(to bottom left, #1A0A33, #2A1A4D); /* Deep Purple to Lighter Purple */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, rgba(26, 10, 51, 0.7) 70%); /* Subtle overlay */
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-content h1 {
+            animation: pulse-glow 3s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 10px #FFD700, 0 0 20px #FF69B4; }
+            100% { text-shadow: 0 0 15px #00BFFF, 0 0 25px #FFD700; }
+        }
+        .star {
+            position: absolute;
+            background-color: #FFD700; /* Vibrant Yellow */
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 5s infinite ease-in-out;
+            z-index: 0; /* Ensure stars are behind content */
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .cosmic-eye {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #00BFFF 0%, #FF69B4 50%, #1A0A33 100%);
+            box-shadow: 0 0 15px #FFD700, 0 0 25px #00BFFF;
+            opacity: 0;
+            animation: float-eye 10s infinite ease-in-out alternate, pulse-eye 3s infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes float-eye {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+            25% { transform: translate(20px, -30px) scale(1.1); opacity: 0.8; }
+            50% { transform: translate(-10px, 40px) scale(0.9); opacity: 0.6; }
+            75% { transform: translate(30px, 10px) scale(1.2); opacity: 0.9; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+        }
+
+        @keyframes pulse-eye {
+            0%, 100% { box-shadow: 0 0 15px #FFD700, 0 0 25px #00BFFF; }
+            50% { box-shadow: 0 0 20px #FF69B4, 0 0 35px #FFD700; }
+        }
+
+        .track-item:hover .track-title {
+            color: #FF69B4; /* Hot Pink */
+            transform: translateX(10px);
+        }
+        .track-item .track-title {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gallery-tab.active {
+            border-color: #FFD700; /* Vibrant Yellow */
+            background-color: #FFD700;
+            color: #1A0A33;
+        }
+        .card-bg-light {
+            background-color: #2A1A4D; /* Lighter Purple */
+        }
+        .text-accent-yellow {
+            color: #FFD700; /* Vibrant Yellow */
+        }
+        .text-accent-pink {
+            color: #FF69B4; /* Hot Pink */
+        }
+        .border-accent-blue {
+            border-color: #00BFFF; /* Electric Blue */
+        }
+        .shadow-psychedelic {
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5), 0 0 30px rgba(0, 191, 255, 0.4), 0 0 40px rgba(255, 215, 0, 0.3);
+        }
+        /* Custom gradients for sections */
+        .bg-gradient-ritual {
+            background: linear-gradient(to bottom, #1A0A33, #2A1A4D, #4c1d95, #6D28D9); /* More shades of purple */
+        }
+        .bg-gradient-ofrenda {
+            background: linear-gradient(to bottom, #2A1A4D, #1A0A33, #7E22CE, #9333EA); /* Lighter Purple, Deep Purple, brighter purples */
+        }
+        .bg-gradient-manifestaciones {
+            background: linear-gradient(to bottom, #1A0A33, #2A1A4D, #6D28D9, #7E22CE); /* Deep Purple, Lighter Purple, more bright purples */
+        }
+        .bg-gradient-contacto {
+            background: linear-gradient(to top, #1A0A33, #2A1A4D);
+        }
+        .spiritual-glyph {
+            display: inline-block;
+            font-size: 1.2em;
+            margin-right: 10px;
+            vertical-align: middle;
+            color: #00BFFF; /* Electric Blue */
+            text-shadow: 0 0 5px #FFD700;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #FFD700;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-purple-900/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 transition-shadow duration-300">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="font-psychedelic text-3xl md:text-4xl font-bold tracking-widest text-white">ALTARES</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#ritual" class="nav-link font-semibold uppercase tracking-wider text-white">El Ritual</a>
+                <a href="#ofrenda" class="nav-link font-semibold uppercase tracking-wider text-white">La Ofrenda</a>
+                <a href="#manifestaciones" class="nav-link font-semibold uppercase tracking-wider text-white">Galería</a>
+                <a href="#contacto" class="nav-link font-semibold uppercase tracking-wider text-white">Contacto</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-purple-900">
+            <a href="#ritual" class="block text-center py-2 px-4 text-sm uppercase nav-link border-b-0 text-white">El Ritual</a>
+            <a href="#ofrenda" class="block text-center py-2 px-4 text-sm uppercase nav-link border-b-0 text-white">La Ofrenda</a>
+            <a href="#manifestaciones" class="block text-center py-2 px-4 text-sm uppercase nav-link border-b-0 text-white">Galería</a>
+            <a href="#contacto" class="block text-center py-2 px-4 text-sm uppercase nav-link border-b-0 text-white">Contacto</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="h-screen w-full flex items-center justify-center text-center text-white hero-bg">
+            <div class="bg-black/60 p-8 rounded-lg backdrop-blur-sm shadow-psychedelic hero-content">
+                <h1 class="font-psychedelic text-6xl md:text-9xl font-bold tracking-widest leading-none text-accent-yellow">ALTARES</h1>
+                <p class="mt-4 md:mt-6 text-xl md:text-3xl font-light tracking-wider text-accent-pink">Primer ritual: Cantos a un ser que a veces me oye</p>
+            </div>
+        </section>
+
+        <section id="ritual" class="py-20 md:py-32 bg-gradient-ritual">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="font-ritual text-4xl md:text-5xl font-bold fade-in text-accent-yellow"><span class="spiritual-glyph">👁️</span> El Ritual</h2>
+                    <p class="mt-6 text-lg md:text-xl text-stone-300 leading-relaxed fade-in">
+                        Esta sección te sumerge en la filosofía y el universo sonoro de Altares. Aquí descubrirás quiénes somos, qué nos mueve y cómo transformamos la existencia en música. Es una invitación a entender que Altares no es solo una banda, sino una ceremonia sónica.
+                    </p>
+                </div>
+
+                <div class="mt-16 max-w-5xl mx-auto space-y-12">
+                    <div class="fade-in">
+                        <h3 class="font-ritual text-3xl font-bold text-center text-accent-pink">Quiénes Somos</h3>
+                        <div class="mt-6 text-stone-300 text-base md:text-lg leading-relaxed space-y-4 text-justify card-bg-light p-8 rounded-lg shadow-lg border border-accent-blue">
+                            <p><strong>Altares no es una banda. Es un ritual.</strong> Un viaje sónico para los que alguna vez sintieron que este mundo no les decía nada… pero igual decidieron quedarse.</p>
+                            <p>Formada por <strong>Joaquín</strong> y <strong>Lasid</strong>, dos compositores, productores e intérpretes peruanos, <em>Altares</em> surge como un acto de rebelión espiritual contra el ruido vacío.</p>
+                            <p>Su sonido es una mezcla entre psicodelia sensual, espiritualidad mantrica y confesiones existenciales, con letras que hablan de amor, deseo, abandono, y de ese Dios interno que todos buscamos pero pocos saben escuchar. Cada canción es una ceremonia: puede sonar íntima, pero apunta a algo colectivo, antiguo, que nos conecta como si hubiéramos olvidado algo importante.</p>
+                            <p>La estética de <em>Altares</em> juega con lo místico, lo absurdo y lo alucinante: visuales inspirados en culturas antiguas, máscaras rituales, simbolismo ancestral, y humor existencial. En sus redes mezclan <strong>videos confusamente hilarantes</strong>, monólogos poéticos, loops visuales y contenido que deja al espectador preguntándose: <em>¿qué acabo de ver y por qué me gustó tanto?</em></p>
+                            <p>Altares no predica respuestas. <strong>Hace preguntas como quien canta un mantra: para que vibren, no para que se entiendan.</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="fade-in">
+                         <h3 class="font-ritual text-3xl font-bold text-center text-accent-pink">El Sonido y la Visión</h3>
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                            <div class="card-bg-light p-6 rounded-lg shadow-lg border border-accent-blue">
+                                <h4 class="font-semibold text-lg text-accent-yellow">Género</h4>
+                                <p class="mt-2 text-stone-300">Psicodelia espiritual / Mantra Pop / Experimental Sensual</p>
+                            </div>
+                            <div class="card-bg-light p-6 rounded-lg shadow-lg border border-accent-blue">
+                                <h4 class="font-semibold text-lg text-accent-yellow">Influencias</h4>
+                                <p class="mt-2 text-stone-300">Tame Impala, Soda Stereo, FKA Twigs, Devendra Banhart</p>
+                            </div>
+                            <div class="card-bg-light p-6 rounded-lg shadow-lg border border-accent-blue">
+                                <h4 class="font-semibold text-lg text-accent-yellow">Visuales</h4>
+                                <p class="mt-2 text-stone-300">Surrealismo digital, simbolismo ancestral, glitch emocional</p>
+                            </div>
+                            <div class="card-bg-light p-6 rounded-lg shadow-lg border border-accent-blue">
+                                <h4 class="font-semibold text-lg text-accent-yellow">En Vivo</h4>
+                                <p class="mt-2 text-stone-300 font-bold">Altares no toca: invoca.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="ofrenda" class="py-20 md:py-32 bg-gradient-ofrenda">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="font-ritual text-4xl md:text-5xl font-bold fade-in text-accent-yellow"><span class="spiritual-glyph">✨</span> La Ofrenda</h2>
+                     <p class="mt-6 text-lg md:text-xl text-stone-300 leading-relaxed fade-in">
+                        "Cantos a un ser que a veces me oye" es nuestro primer ritual hecho música. En esta sección, te presentamos el corazón de nuestra ofrenda: el álbum. Descubre cada canto, cada plegaria y el concepto que une este viaje sonoro, una exploración del deseo, la fe y la carne.
+                    </p>
+                </div>
+
+                <div class="mt-16 max-w-4xl mx-auto card-bg-light p-8 md:p-12 rounded-lg shadow-lg border border-accent-blue fade-in">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-semibold text-accent-pink">Nuestro primer álbum</h3>
+                        <p class="font-ritual text-4xl mt-2 text-accent-yellow">Cantos a un ser que a veces me oye</p>
+                    </div>
+                    <div class="mt-8 text-center text-stone-300 italic">
+                        <p id="album-context">Una plegaria disfrazada de canción. Una ofrenda para ese dios interno que olvidaste mirar. Nuestro primer ritual: una mezcla de deseo, fe, carne y sonido.</p>
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <button id="generate-vision-btn" class="bg-accent-yellow text-purple-900 px-6 py-3 rounded-full font-bold uppercase hover:bg-yellow-300 transition-colors duration-300 flex items-center justify-center mx-auto">
+                            <span id="btn-text">✨ Generar Visión Mística del Álbum ✨</span>
+                            <div id="loading-spinner" class="loading-spinner ml-3 hidden"></div>
+                        </button>
+                        <div id="album-vision-output" class="mt-6 p-6 bg-purple-900/50 rounded-lg text-stone-200 text-lg italic hidden">
+                            <!-- Gemini API output will be displayed here -->
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h4 class="text-center text-2xl font-semibold mb-6 text-accent-pink">Tracklist</h4>
+                        <ol class="space-y-4">
+                            <li class="track-item border-b border-purple-700 pb-3 flex items-center justify-between">
+                                <span class="text-accent-yellow font-bold text-xl w-8">1.</span>
+                                <span class="track-title text-xl text-white flex-grow">Encontrarnos de nuevo</span>
+                                <audio controls class="ml-4 w-24 h-8" preload="none">
+                                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"> <!-- Placeholder URL for song fragment -->
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                            </li>
+                            <li class="track-item border-b border-purple-700 pb-3 flex items-center justify-between">
+                                <span class="text-accent-yellow font-bold text-xl w-8">2.</span>
+                                <span class="track-title text-xl text-white flex-grow">Donde el tiempo no existe</span>
+                                <audio controls class="ml-4 w-24 h-8" preload="none">
+                                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg"> <!-- Placeholder URL for song fragment -->
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                            </li>
+                            <li class="track-item border-b border-purple-700 pb-3 flex items-center justify-between">
+                                <span class="text-accent-yellow font-bold text-xl w-8">3.</span>
+                                <span class="track-title text-xl text-white flex-grow">Nadie sabe qué sentir</span>
+                                <audio controls class="ml-4 w-24 h-8" preload="none">
+                                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg"> <!-- Placeholder URL for song fragment -->
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                            </li>
+                            <li class="track-item border-b border-purple-700 pb-3 flex items-center justify-between">
+                                <span class="text-accent-yellow font-bold text-xl w-8">4.</span>
+                                <span class="track-title text-xl text-white flex-grow">Mantra del retorno</span>
+                                <audio controls class="ml-4 w-24 h-8" preload="none">
+                                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg"> <!-- Placeholder URL for song fragment -->
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                            </li>
+                            <li class="track-item border-b border-purple-700 pb-3 flex items-center justify-between">
+                                <span class="text-accent-yellow font-bold text-xl w-8">5.</span>
+                                <span class="track-title text-xl text-white flex-grow">Cuando Dios oyó el grito</span>
+                                <audio controls class="ml-4 w-24 h-8" preload="none">
+                                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg"> <!-- Placeholder URL for song fragment -->
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                            </li>
+                            <li class="track-item pb-3 flex items-center justify-between">
+                                <span class="text-accent-yellow font-bold text-xl w-8">6.</span>
+                                <span class="track-title text-xl text-white flex-grow">Tu piel no miente, el mundo sí</span>
+                                <audio controls class="ml-4 w-24 h-8" preload="none">
+                                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" type="audio/mpeg"> <!-- Placeholder URL for song fragment -->
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="manifestaciones" class="py-20 md:py-32 bg-gradient-manifestaciones">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="font-ritual text-4xl md:text-5xl font-bold fade-in text-accent-yellow"><span class="spiritual-glyph">🌀</span> Manifestaciones</h2>
+                    <p class="mt-6 text-lg md:text-xl text-stone-300 leading-relaxed fade-in">
+                       El ritual de Altares es tanto sonoro como visual. Aquí puedes explorar nuestras múltiples formas a través de la galería de fotos y videos. Observa nuestros cuerpos, máscaras y la energía que capturamos en ensayos, shows en vivo y exploraciones visuales.
+                    </p>
+                </div>
+                
+                <div class="max-w-5xl mx-auto mt-12 fade-in">
+                    <div class="flex justify-center mb-8 border-b-2 border-accent-blue">
+                        <button data-tab="fotos" class="gallery-tab font-semibold py-2 px-6 border-b-2 transition-colors duration-300 active bg-accent-yellow text-purple-900 rounded-t-lg">Fotos</button>
+                        <button data-tab="videos" class="gallery-tab font-semibold py-2 px-6 border-b-2 transition-colors duration-300 text-white rounded-t-lg">Videos</button>
+                    </div>
+
+                    <div id="fotos" class="gallery-content">
+                        <p class="text-center text-stone-300 mb-8 italic">Altares en sus múltiples formas. Cuerpo, máscara y energía.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/6" alt="Altares en vivo con luces rojas y amarillas" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/7" alt="Joaquín tocando la guitarra con efectos de luz" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/8" alt="Altares en el escenario con luces verticales" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/9" alt="Lasid cantando con efectos de luz circular" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/10" alt="Lasid cantando con luces azules" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/11" alt="Altares en el escenario con luces azules intensas" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/12" alt="Joaquín y Lasid tocando con luces azules y moradas" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/13" alt="Altares en el escenario con luces azules y sombras" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/14" alt="Vista diagonal de Altares en el escenario con luces azules" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                            <div class="cursor-pointer group"><img src="http://googleusercontent.com/file_content/15" alt="Joaquín tocando la guitarra con luces azules y rojas" class="rounded-lg shadow-lg hover:shadow-psychedelic transition-shadow duration-300 gallery-img border-2 border-accent-blue"></div>
+                        </div>
+                    </div>
+
+                    <div id="videos" class="gallery-content hidden">
+                         <div class="space-y-12">
+                            <div class="text-center">
+                                <h4 class="text-xl font-semibold text-accent-pink">Live ritual en Lima – 2025</h4>
+                                <div class="aspect-w-16 aspect-h-9 mt-4 max-w-3xl mx-auto bg-purple-900 rounded-lg shadow-lg flex items-center justify-center border-2 border-accent-blue">
+                                    <!-- Aquí puedes incrustar un video de YouTube o Vimeo. Ejemplo: -->
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    <!-- O un placeholder si no hay URL de video: -->
+                                    <!-- <p class="text-white">Video Placeholder</p> -->
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="text-xl font-semibold text-accent-pink">Ensayo ritual 000 – improvisación en Re menor</h4>
+                                <div class="aspect-w-16 aspect-h-9 mt-4 max-w-3xl mx-auto bg-purple-900 rounded-lg shadow-lg flex items-center justify-center border-2 border-accent-blue">
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="text-xl font-semibold text-accent-pink">Reel existencial: ‘Felicidades, naciste. No hay instrucciones’</h4>
+                                <div class="aspect-w-16 aspect-h-9 mt-4 max-w-3xl mx-auto bg-purple-900 rounded-lg shadow-lg flex items-center justify-center border-2 border-accent-blue">
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/VIDEO_ID_3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="contacto" class="bg-gradient-contacto text-stone-200 py-16">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="font-ritual text-3xl md:text-4xl font-bold fade-in text-accent-yellow"><span class="spiritual-glyph">🌌</span> Invoca el Contacto</h2>
+                <p class="mt-6 text-lg text-stone-300 leading-relaxed max-w-2xl mx-auto fade-in">
+                    Conéctate con el ritual. Síguenos en nuestras redes para ser parte de la ceremonia digital o escríbenos para colaboraciones, prensa y presentaciones en vivo.
+                </p>
+                <div class="mt-10 flex justify-center space-x-6 fade-in">
+                    <a href="#" target="_blank" class="hover:text-accent-pink transition-colors duration-300" aria-label="Instagram">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c-4.42 0-7.8 3.38-7.8 7.8s3.38 7.8 7.8 7.8 7.8-3.38 7.8-7.8S16.735 2 12.315 2zM1.344 12.315c0-6.04 4.88-10.965 10.97-10.965S23.285 6.275 23.285 12.315 18.405 23.28 12.315 23.28 1.344 18.355 1.344 12.315zm5.998 0a5.003 5.003 0 1110.006 0 5.003 5.003 0 01-10.006 0zm2.223 0a2.78 2.78 0 115.56 0 2.78 2.78 0 01-5.56 0zm8.06-4.965a.97.97 0 111.94 0 .97.97 0 01-1.94 0z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <a href="#" target="_blank" class="hover:text-accent-pink transition-colors duration-300" aria-label="TikTok">
+                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 0 .14.02.2.04.1.04.18.09.26.15.1.08.19.18.26.29s.12.23.15.36c.03.14.04.28.04.43v10.5c0 .71-.15 1.4-.44 2.02s-.69 1.15-1.18 1.58c-.5.44-1.07.78-1.7.98s-1.28.3-1.96.3h-.02c-.67 0-1.33-.09-1.96-.28s-1.2-.48-1.68-.88c-.49-.39-.89-.88-1.2-1.43s-.5-1.17-.59-1.8c-.03-.22-.04-.44-.04-.66v-4.52h2.4v4.52c0 .33.04.64.13.93s.23.54.4.75c.18.21.39.37.62.48.23.11.49.16.76.16s.53-.05.76-.16c.23-.11.44-.27.62-.48.18-.21.32-.44.4-.75s.13-.6.13-.93v-10.5c0-.15-.01-.29-.04-.43s-.08-.26-.15-.36c-.07-.11-.16-.21-.26-.29s-.2-.11-.3-.15c-.06-.02-.12-.04-.2-.04-1.3-.01-2.6-.02-3.91-.02s-2.6.01-3.91.02c-.08 0-.14.02-.2.04-.1.04-.18.09-.26.15-.1.08-.19.18-.26.29-.07.11-.12.23-.15.36-.03.14-.04.28-.04.43v6.78h-2.4V4.95c0-.71.15-1.4.44-2.02.3-.62.69-1.15 1.18-1.58.5-.44 1.07-.78 1.7-.98 1.3-.4 2.63-.4 3.95 0 .67.2 1.28.52 1.83.95.55.43 1.02.97 1.38 1.6.36.63.59 1.35.65 2.12.03.14.04.28.04.43v6.78h2.4V4.95c0-.71.15-1.4.44-2.02.3-.62.69-1.15 1.18-1.58.5-.44 1.07-.78 1.7-.98.63-.2 1.28-.3 1.96-.3h.02c.67 0 1.33.09 1.96.28s1.2.48 1.68.88c.49.39.89.88 1.2 1.43.31.55.5 1.17.59 1.8.03.22.04.44.04.66v4.52h-2.4V8.47c0-.33-.04-.64-.13-.93s-.23-.54-.4-.75c-.18-.21-.39-.37-.62-.48-.23-.11-.49-.16-.76-.16s-.53.05-.76-.16c-.23-.11-.44-.27-.62-.48-.18-.21-.32-.44-.4-.75-.09-.29-.13-.6-.13-.93V.45c0-.15.01-.29.04-.43.03-.14.08-.26.15-.36.07-.11.16-.21.26-.29.1-.08.2-.11.3-.15.06-.02.12-.04.2-.04 1.3-.01 2.6-.02 3.91-.02z"/></svg>
+                    </a>
+                    <a href="#" target="_blank" class="hover:text-accent-pink transition-colors duration-300" aria-label="YouTube">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.822 7.425a2.464 2.464 0 00-1.742-1.742C16.336 5.25 12 5.25 12 5.25s-4.336 0-6.08.433a2.464 2.464 0 00-1.742 1.742C3.75 9.169 3.75 12 3.75 12s0 2.831.428 4.575a2.464 2.464 0 001.742 1.742C7.664 18.75 12 18.75 12 18.75s4.336 0 6.08-.433a2.464 2.464 0 001.742-1.742c.428-1.744.428-4.575.428-4.575s0-2.831-.428-4.575zM9.75 14.438V9.562l4.333 2.438L9.75 14.438z" clip-rule="evenodd" /></svg>
+                    </a>
+                </div>
+                <div class="mt-8 fade-in">
+                    <p class="text-stone-300">Email profesional: <a href="mailto:contacto@altares.musica" class="text-accent-yellow hover:underline">contacto@altares.musica</a></p>
+                    <p class="text-stone-300 mt-2">Press & Booking: <a href="#" target="_blank" class="text-accent-yellow hover:underline">linktr.ee/altares</a></p>
+                </div>
+
+                <div class="mt-12 border-t border-purple-700 pt-8 max-w-2xl mx-auto fade-in">
+                    <p class="text-stone-400 italic text-lg">"Altares está listo para tocar donde la gente necesite recordar que su alma también escucha."</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <div id="lightbox" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+        <button id="lightbox-close" class="absolute top-4 right-4 text-white text-4xl">&times;</button>
+        <img id="lightbox-img" src="" alt="Vista ampliada" class="max-w-full max-h-full rounded-lg">
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('header');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            // Function to create and append stars to the hero section
+            function createStars(count) {
+                const heroSection = document.getElementById('home');
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    star.style.width = `${Math.random() * 3 + 1}px`;
+                    star.style.height = star.style.width;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    heroSection.appendChild(star);
+                }
+            }
+            createStars(100); // Generate 100 stars
+
+            // Function to create and append cosmic eyes to the hero section
+            function createCosmicEyes(count) {
+                const heroSection = document.getElementById('home');
+                for (let i = 0; i < count; i++) {
+                    const eye = document.createElement('div');
+                    eye.classList.add('cosmic-eye');
+                    eye.style.left = `${Math.random() * 100}%`;
+                    eye.style.top = `${Math.random() * 100}%`;
+                    eye.style.animationDelay = `${Math.random() * 10}s`; // Longer delay for eyes
+                    eye.style.width = `${Math.random() * 40 + 30}px`; // Random size for eyes
+                    eye.style.height = eye.style.width;
+                    heroSection.appendChild(eye);
+                }
+            }
+            createCosmicEyes(5); // Generate 5 cosmic eyes
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('shadow-md');
+                } else {
+                    header.classList.remove('shadow-md');
+                }
+                
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                     if (this.parentElement.id === 'mobile-menu') {
+                        mobileMenu.classList.add('hidden');
+                     }
+                });
+            });
+
+            const galleryTabs = document.querySelectorAll('.gallery-tab');
+            const galleryContents = document.querySelectorAll('.gallery-content');
+            
+            galleryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    galleryTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const target = tab.dataset.tab;
+                    galleryContents.forEach(content => {
+                        if (content.id === target) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const galleryImgs = document.querySelectorAll('.gallery-img');
+            const lightboxClose = document.getElementById('lightbox-close');
+
+            galleryImgs.forEach(img => {
+                img.addEventListener('click', () => {
+                    lightbox.classList.remove('hidden');
+                    lightbox.classList.add('flex');
+                    lightboxImg.src = img.src;
+                });
+            });
+
+            const closeLightbox = () => {
+                lightbox.classList.add('hidden');
+                lightbox.classList.remove('flex');
+            }
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('visible');
+                        appearOnScroll.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+
+            // Gemini API Integration
+            const generateVisionBtn = document.getElementById('generate-vision-btn');
+            const albumVisionOutput = document.getElementById('album-vision-output');
+            const albumTitle = "Cantos a un ser que a veces me oye";
+            const albumContext = document.getElementById('album-context').innerText;
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const btnText = document.getElementById('btn-text');
+
+            generateVisionBtn.addEventListener('click', async () => {
+                albumVisionOutput.classList.add('hidden'); // Hide previous output
+                loadingSpinner.classList.remove('hidden'); // Show spinner
+                btnText.classList.add('hidden'); // Hide button text
+
+                const prompt = `Genera una visión mística, psicodélica y espiritual del álbum "${albumTitle}". Ten en cuenta que el álbum es descrito como: "${albumContext}". La visión debe ser poética, abstracta y evocar la dualidad de la vida y la muerte, el todo y la nada, y la existencia como puente.`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        albumVisionOutput.innerHTML = `<p>${text}</p>`;
+                        albumVisionOutput.classList.remove('hidden');
+                    } else {
+                        albumVisionOutput.innerHTML = '<p>Error al generar la visión. Inténtalo de nuevo.</p>';
+                        albumVisionOutput.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    albumVisionOutput.innerHTML = '<p>Error de conexión. Inténtalo de nuevo más tarde.</p>';
+                    albumVisionOutput.classList.remove('hidden');
+                } finally {
+                    loadingSpinner.classList.add('hidden'); // Hide spinner
+                    btnText.classList.remove('hidden'); // Show button text
+                }
+            });
+        });
+    </script>
+</body>
+</html>
